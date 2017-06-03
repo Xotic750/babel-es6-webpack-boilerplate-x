@@ -1,0 +1,31 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions"],
+        "node": 6
+      },
+      "useBuiltIns": true,
+      "spec": true,
+      "modules": "commonjs",
+      "debug": false
+    }]
+  ],
+  "plugins": [
+    "add-module-exports",
+    "transform-exponentiation-operator",
+    ["transform-class-properties", { "spec": true }],
+    ["transform-es2015-classes", { "loose": true }],
+    ["transform-object-rest-spread", { "useBuiltIns": true }]
+  ],
+  "env": {
+    "production": {
+      "presets": [],
+      "plugins": []
+    },
+    "development": {
+      "presets": [],
+      "plugins": []
+    }
+  }
+}
