@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
 
 const config = {
   devtool: 'cheap-module-source-map',
@@ -9,12 +10,23 @@ const config = {
     './index.js',
   ],
 
+  externals: {
+    lodash: {
+      commonjs: 'lodash',
+      commonjs2: 'lodash',
+      amd: 'lodash',
+      root: '_',
+    },
+  },
+
   context: path.resolve(__dirname, 'src'),
 
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: '',
+    libraryTarget: 'umd',
+    library: 'returnExports',
   },
 
   plugins: [

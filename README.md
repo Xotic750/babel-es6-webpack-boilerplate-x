@@ -1,6 +1,6 @@
 # ES6 Babel boilerplate using Webpack
 
-[![Travis](https://img.shields.io/travis/Xotic750/babel-es6-webpack-bolierplate-x/master.svg?style=flat-square)](https://travis-ci.org/Xotic750/babel-es6-webpack-bolierplate-x) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![Travis](https://img.shields.io/travis/Xotic750/babel-es6-webpack-boilerplate-x/master.svg?style=flat-square)](https://travis-ci.org/Xotic750/babel-es6-webpack-boilerplate-x) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 Includes: 
 
@@ -15,7 +15,7 @@ Includes:
 
 Make sure you have Node.js installed.
 
-1. `git clone https://github.com/Xotic750/babel-es6-webpack-bolierplate-x.git`
+1. `git clone https://github.com/Xotic750/babel-es6-webpack-boilerplate-x.git`
 2. Run `npm install` or `yarn install`
 3. Start the dev server using `npm start`
 
@@ -34,4 +34,4 @@ Run `npm run production`. The production-ready code will be located under `dist`
 
 ## Licence
 
-_babel-es6-webpack-bolierplate-x_ is available under MIT.
+_babel-es6-webpack-boilerplate-x_ is available under MIT.
