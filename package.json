@@ -1,6 +1,6 @@
 {
   "name": "babel-es6-webpack-boilerplate-x",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "ES6 Babel Webpack boilerplate",
   "homepage": "https://github.com/Xotic750/babel-es6-webpack-boilerplate-x.git",
   "repository": {
@@ -48,7 +48,7 @@
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.5.2",
-    "chai": "^3.5.0",
+    "chai": "^4.0.2",
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^5.0.1",
     "eslint": "^3.19.0",
