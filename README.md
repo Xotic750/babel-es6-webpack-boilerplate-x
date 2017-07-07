@@ -25,6 +25,7 @@ Make sure you have Node.js installed.
 - `npm clean` - delete the dist folder
 - `npm run production` - create a production ready build in `dist` folder
 - `npm run lint` - execute an eslint check
+- `npm run lint-fix` - execute an eslint check and automatically fix
 - `npm test` - run all tests
 
 
