@@ -1,5 +1,7 @@
 # ES6 Babel boilerplate using Webpack
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Xotic750/babel-es6-webpack-boilerplate-x.svg)](https://greenkeeper.io/)
+
 [![Travis](https://img.shields.io/travis/Xotic750/babel-es6-webpack-boilerplate-x/master.svg?style=flat-square)](https://travis-ci.org/Xotic750/babel-es6-webpack-boilerplate-x) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
 Includes: 
