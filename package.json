@@ -52,7 +52,7 @@
     "chai": "^4.0.2",
     "copy-webpack-plugin": "^4.0.1",
     "cross-env": "^5.0.1",
-    "eslint": "^3.19.0",
+    "eslint": "^4.2.0",
     "eslint-config-airbnb": "^15.0.2",
     "eslint-import-resolver-webpack": "^0.8.3",
     "eslint-plugin-chai-friendly": "^0.3.6",
@@ -63,7 +63,7 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsdoc": "^3.1.1",
     "eslint-plugin-json": "^1.2.0",
-    "eslint-plugin-jsx-a11y": "5.1.1",
+    "eslint-plugin-jsx-a11y": "6.0.2",
     "eslint-plugin-lodash": "^2.4.3",
     "eslint-plugin-no-use-extend-native": "^0.3.12",
     "eslint-plugin-prefer-object-spread": "^1.2.1",
@@ -79,7 +79,7 @@
     "open-browser-webpack-plugin": "^0.0.5",
     "rimraf": "^2.6.1",
     "url-loader": "^0.5.9",
-    "webpack": "^2.6.1",
+    "webpack": "^3.1.0",
     "webpack-dev-server": "^2.5.1"
   },
   "engines": {
