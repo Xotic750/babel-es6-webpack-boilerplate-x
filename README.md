@@ -5,7 +5,7 @@
 Includes: 
 
 - [x] ECMAScript 6
-- [x] Latest Webpack and Webpack Dev Server v2
+- [x] Latest Webpack and Webpack Dev Server v3
 - [x] "nodemon" automated development testing
 - [x] Production Config
 - [x] Custom Babel Preset with Exponentiation Operator, Class Properties, Rest/Spread operator support 

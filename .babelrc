@@ -1,31 +1,29 @@
 {
   "presets": [
     ["env", {
-      "targets": {
-        "browsers": ["last 2 versions"],
-        "node": 6
-      },
-      "useBuiltIns": true,
-      "spec": true,
+      "loose": false,
       "modules": "commonjs",
+      "spec": true,
+      "targets": {
+        "browsers": [
+          "> 1%",
+          "last 2 versions",
+          "not ie <= 8"
+        ]
+      },
+      "useBuiltIns": "usage",
       "debug": false
-    }]
+    }],
+    "stage-2"
   ],
   "plugins": [
-    "add-module-exports",
-    "transform-exponentiation-operator",
-    ["transform-class-properties", { "spec": true }],
-    ["transform-es2015-classes", { "loose": true }],
-    ["transform-object-rest-spread", { "useBuiltIns": true }]
-  ],
-  "env": {
-    "production": {
-      "presets": [],
-      "plugins": []
-    },
-    "development": {
-      "presets": [],
-      "plugins": []
-    }
-  }
+    "dynamic-import-node",
+    "js-logger",
+    "lodash",
+    "transform-class-properties",
+    "transform-es5-property-mutators",
+    "transform-export-extensions",
+    "transform-object-rest-spread",
+    "transform-runtime"
+  ]
 }

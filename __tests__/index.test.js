@@ -1,7 +1,6 @@
-import { expect } from 'chai';
 import main from '../src/index';
 
-describe('App Component', () => {
+describe('Module', () => {
   let obj;
 
   beforeEach(() => {
@@ -9,10 +8,10 @@ describe('App Component', () => {
   });
 
   it('should exist', () => {
-    expect(obj).to.exist;
+    expect(obj).toBeDefined();
   });
 
   it('should be a function', () => {
-    expect(main).be.a('function');
+    expect(main).toBeInstanceOf(Function);
   });
 });
