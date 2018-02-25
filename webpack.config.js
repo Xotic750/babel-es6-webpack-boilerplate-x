@@ -59,11 +59,10 @@ const DEFAULT_ENV = {
  * @param {!Object} env - The env object.
  * @see {@link https://webpack.js.org/guides/environment-variables/}
  */
-module.exports = (env = DEFAULT_ENV) => {
-  return {
-    context: path.resolve(__dirname, '.'),
+module.exports = (env = DEFAULT_ENV) => ({
+  context: path.resolve(__dirname, '.'),
 
-    /**
+  /**
      * This option controls if and how source maps are generated.
      *
      * nosources-source-map - A SourceMap is created without the sourcesContent in it.
@@ -81,18 +80,18 @@ module.exports = (env = DEFAULT_ENV) => {
      * @type {string}
      * @see {@link https://webpack.js.org/configuration/devtool/}
      */
-    devtool: NODE_ENV === PRODUCTION ? 'source-map' : 'eval-source-map',
+  devtool: NODE_ENV === PRODUCTION ? 'source-map' : 'eval-source-map',
 
-    /**
+  /**
      * Define the entry points for the application.
      * @type {array.<string>}
      * @see {@link https://webpack.js.org/concepts/entry-points/}
      */
-    entry: [path.join(__dirname, 'src/index.js')],
+  entry: [path.join(__dirname, 'src/index.js')],
 
-    // mode: NODE_ENV === PRODUCTION ? PRODUCTION : DEVELOPMENT,
+  // mode: NODE_ENV === PRODUCTION ? PRODUCTION : DEVELOPMENT,
 
-    /**
+  /**
      * In modular programming, developers break programs up into discrete chunks of functionality
      * called a module. Each module has a smaller surface area than a full program, making verification,
      * debugging, and testing trivial. Well-written modules provide solid abstractions and encapsulation
@@ -106,76 +105,76 @@ module.exports = (env = DEFAULT_ENV) => {
      * @type {array.<!Object>}
      * @see {@link https://webpack.js.org/configuration/module/#module-rules}
      */
-    module: {
-      rules: [
-        /**
+  module: {
+    rules: [
+      /**
          * eslint-loader options.
          * @type {!Object}
          * @see {@link https://github.com/MoOx/eslint-loader}
          */
-        {
-          enforce: 'pre',
-          exclude: DEFAULT_EXCLUDE_RX,
-          loader: 'eslint-loader',
-          options: {
-            emitError: true,
-            emitWarning: false,
-            failOnError: true,
-            failOnWarning: false,
-            formatter: eslintFriendlyFormatter,
-            quiet: true,
-          },
-          test: /\.(js|json)$/,
+      {
+        enforce: 'pre',
+        exclude: DEFAULT_EXCLUDE_RX,
+        loader: 'eslint-loader',
+        options: {
+          emitError: true,
+          emitWarning: false,
+          failOnError: true,
+          failOnWarning: false,
+          formatter: eslintFriendlyFormatter,
+          quiet: true,
         },
+        test: /\.(js|json)$/,
+      },
 
-        /**
+      /**
          * This package allows transpiling JavaScript files using Babel and webpack.
          * @type {!Object}
          * @see {@link https://webpack.js.org/loaders/babel-loader/}
          */
-        {
-          exclude: DEFAULT_EXCLUDE_RX,
-          loader: 'babel-loader',
-          options: {
-            plugins: ['lodash'],
-            presets: [['env', {
-              modules: false,
-              targets: {
-                node: 8,
-              },
-            }]],
-          },
-          test: /\.js$/,
+      {
+        exclude: DEFAULT_EXCLUDE_RX,
+        loader: 'babel-loader',
+        options: {
+          plugins: ['lodash'],
+          presets: [['env', {
+            modules: false,
+            targets: {
+              node: 8,
+            },
+          }]],
         },
-      ],
-    },
+        test: /\.js$/,
+      },
+    ],
+  },
 
-    // prevent webpack from injecting mocks to Node native modules
-    // that does not make sense for the client
-    node: {
-      child_process: 'empty',
-      dgram: 'empty',
-      fs: 'empty',
-      net: 'empty',
-      // prevent webpack from injecting useless setImmediate polyfill.
-      setImmediate: false,
-      tls: 'empty',
-    },
+  // prevent webpack from injecting mocks to Node native modules
+  // that does not make sense for the client
+  node: {
+    child_process: 'empty',
+    dgram: 'empty',
+    fs: 'empty',
+    net: 'empty',
+    // prevent webpack from injecting useless setImmediate polyfill.
+    setImmediate: false,
+    tls: 'empty',
+  },
 
-    /**
+  /**
      * Configuring the output configuration options tells webpack how to write the compiled
      * files to disk.
      * @type {!Object}
      * @see {@link https://webpack.js.org/configuration/output/}
      */
-    output: {
-      filename: 'index.js',
-      library: 'returnExports',
-      libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'dist'),
-    },
+  output: {
+    filename: 'index.js',
+    library: 'returnExports',
+    libraryTarget: 'umd',
+    path: path.resolve(__dirname, 'dist'),
+  },
 
-    /**
+  /**
      * Plugins are the backbone of webpack. webpack itself is built on the same plugin system
      * that you use in your webpack configuration!
      *
@@ -184,75 +183,74 @@ module.exports = (env = DEFAULT_ENV) => {
      *
      * @type {array.<!Object>}
      */
-    plugins: [
-      /**
+  plugins: [
+    /**
        * Use the shorthand version.
        * @type {!Object}
        * @see {@link https://webpack.js.org/plugins/environment-plugin/}
        */
-      new webpack.EnvironmentPlugin({
-        DEBUG: false, // use 'false' unless process.env.DEBUG is defined.
-        NODE_ENV: DEVELOPMENT, // use 'development' unless process.env.NODE_ENV is defined.
-      }),
+    new webpack.EnvironmentPlugin({
+      DEBUG: false, // use 'false' unless process.env.DEBUG is defined.
+      NODE_ENV: DEVELOPMENT, // use 'development' unless process.env.NODE_ENV is defined.
+    }),
 
-      /**
+    /**
        * Fetch polyfill for environments that are missing the API.
        * Only loads if required.
        * @type {!Object}
        * @see {@link https://webpack.js.org/plugins/provide-plugin/
      */
-      new webpack.ProvidePlugin({
-        fetch: WHATWG_FETCH,
-        'window.fetch': WHATWG_FETCH,
-      }),
+    new webpack.ProvidePlugin({
+      fetch: WHATWG_FETCH,
+      'window.fetch': WHATWG_FETCH,
+    }),
 
-      /**
+    /**
        * Smaller lodash builds. We are not opting in to path feature.
        * @type {!Object}
        * @see {@link https://github.com/lodash/lodash-webpack-plugin}
        */
-      new LodashModuleReplacementPlugin({
-        paths: true,
-      }),
+    new LodashModuleReplacementPlugin({
+      paths: true,
+    }),
 
-      /**
+    /**
        * This plugin uses UglifyJS v3 (uglify-es) to minify your JavaScript.
        * @type {!Object}
        * @see {@link https://webpack.js.org/plugins/uglifyjs-webpack-plugin/}
        */
-      ...(NODE_ENV === PRODUCTION ? [new webpack.optimize.UglifyJsPlugin({
-        parallel: true,
-        sourceMap: true,
-        uglifyOptions: {
-          ecma: 8,
-        },
-      })] : []),
+    ...(NODE_ENV === PRODUCTION ? [new webpack.optimize.UglifyJsPlugin({
+      parallel: true,
+      sourceMap: true,
+      uglifyOptions: {
+        ecma: 8,
+      },
+    })] : []),
 
-      /**
+    /**
        * Webpack plugin and CLI utility that represents bundle content as convenient
        * interactive zoomable treemap.
        * @type {!Object}
        * @see {@link https://github.com/webpack-contrib/webpack-bundle-analyzer}
        */
-      ...(env.report ? [new BundleAnalyzerPlugin()] : []),
-    ],
+    ...(env.report ? [new BundleAnalyzerPlugin()] : []),
+  ],
 
-    /**
+  /**
      * These options change how modules are resolved.
      * @type {!Object}
      * @see {@link https://webpack.js.org/configuration/resolve/}
      */
-    resolve: {
-      /**
+  resolve: {
+    /**
        * Create aliases to import or require certain modules more easily.
        * @type {!Object}
        * @see {@link https://webpack.js.org/configuration/resolve/#resolve-alias}
        */
-      alias: {
-        RootDir: path.resolve(__dirname, '.'),
-        src: path.resolve(__dirname, 'src'),
-      },
-      extensions: ['.js', '.json'],
+    alias: {
+      RootDir: path.resolve(__dirname, '.'),
+      src: path.resolve(__dirname, 'src'),
     },
-  };
-};
+    extensions: ['.js', '.json'],
+  },
+});
