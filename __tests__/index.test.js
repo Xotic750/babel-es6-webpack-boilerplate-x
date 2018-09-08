@@ -1,6 +1,6 @@
 import main from '../src/index';
 
-describe('Module', () => {
+describe('module', () => {
   let obj;
 
   beforeEach(() => {
@@ -8,10 +8,12 @@ describe('Module', () => {
   });
 
   it('should exist', () => {
+    expect.hasAssertions();
     expect(obj).toBeDefined();
   });
 
   it('should be a function', () => {
+    expect.hasAssertions();
     expect(main).toBeInstanceOf(Function);
   });
 });

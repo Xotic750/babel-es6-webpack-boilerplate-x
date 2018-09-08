@@ -5,10 +5,9 @@
 Includes: 
 
 - [x] ECMAScript 6
-- [x] Latest Webpack and Webpack Dev Server v3
+- [x] Latest Webpack and Webpack Dev Server v4
 - [x] "nodemon" automated development testing
 - [x] Production Config
-- [x] Custom Babel Preset with Exponentiation Operator, Class Properties, Rest/Spread operator support 
 - [x] ES6 Linting
 
 ## Starting the dev server
@@ -16,7 +15,7 @@ Includes:
 Make sure you have Node.js installed.
 
 1. `git clone https://github.com/Xotic750/babel-es6-webpack-boilerplate-x.git`
-2. Run `npm install` or `yarn install`
+2. Run `npm install`
 3. Start the dev server using `npm start`
 
 ## Available Commands

@@ -3,10 +3,7 @@
 module.exports = {
   collectCoverage: true,
   coverageDirectory: '__tests__/coverage/',
-  moduleFileExtensions: [
-    'js',
-    'json',
-  ],
+  moduleFileExtensions: ['js', 'json'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },

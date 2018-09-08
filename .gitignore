@@ -53,8 +53,14 @@ node_modules
 # npm debug log
 npm-debug.log
 
+# yarn error log
+yarn-error.log
+
 # vs code
 .vscode
 
 # Apple macOS
 .DS_Store
+
+# coverage results
+__tests__/coverage/

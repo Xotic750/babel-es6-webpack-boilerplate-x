@@ -6,19 +6,44 @@
 
 const path = require('path');
 const webpack = require('webpack');
+const merge = require('webpack-merge');
+const childProcess = require('child_process');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const eslintFriendlyFormatter = require('eslint-friendly-formatter');
-const {
-  BundleAnalyzerPlugin,
-} = require('webpack-bundle-analyzer');
+const stylish = require('eslint/lib/formatters/stylish');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+
+const getGlobal = function() {
+  'use strict';
+
+  if (typeof self !== 'undefined') {
+    return self;
+  }
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  if (typeof global !== 'undefined') {
+    return global;
+  }
+  return Function('return this')();
+};
+
+const filename = 'babel-es6-webpack-boilerplate-x';
+const library = 'MyLibrary';
+const dist = path.resolve(__dirname, 'dist');
+
+/**
+ * Whether eslint should use the friendly formatter.
+ * @type {boolean}
+ */
+const USE_FRIENDLY_FORMATTER = false;
 
 /**
  * The NODE_ENV environment variable.
  * @type {!Object}
  */
-const {
-  NODE_ENV,
-} = process.env;
+const {NODE_ENV} = process.env;
 
 /**
  * The production string.
@@ -38,31 +63,43 @@ const DEVELOPMENT = 'development';
  */
 const DEFAULT_EXCLUDE_RX = /node_modules/;
 
-/**
- * For polyfilling the Fetch API if required.
- * @type {string}
- *
- * https://github.com/github/fetch
- * https://github.com/webpack-contrib/imports-loader
- * https://github.com/webpack-contrib/exports-loader
- * https://webpack.js.org/guides/migrating/#automatic-loader-module-name-extension-removed
- * */
+// https://github.com/github/fetch
+// https://github.com/webpack-contrib/imports-loader
+// https://github.com/webpack-contrib/exports-loader
+// https://webpack.js.org/guides/migrating/#automatic-loader-module-name-extension-removed
 const WHATWG_FETCH = 'imports-loader?this=>global!exports-loader?global.fetch!whatwg-fetch';
-
-const DEFAULT_ENV = {
-  report: false,
-};
 
 /**
  * Allows you to pass in as many environment variables as you like using --env.
+ * See {@link http://webpack.js.org/guides/environment-variables}.
  *
- * @param {!Object} env - The env object.
- * @see {@link https://webpack.js.org/guides/environment-variables/}
+ * @param {!Object} [env={}] - The env object.
  */
-module.exports = (env = DEFAULT_ENV) => ({
-  context: path.resolve(__dirname, '.'),
+module.exports = function generateConfig(env) {
+  /**
+   * The JSON content of `package.json`
+   * @type {!Object}
+   */
+  const PACKAGE = require('./package.json');
 
   /**
+   * The reference created bu git describe --dirty`
+   * @type {string}
+   * @see {@link https://git-scm.com/docs/git-describe}
+   */
+  const DESCRIBE = childProcess
+    .spawnSync('git', ['describe', '--dirty'])
+    .output[1].toString()
+    .trim();
+
+  /**
+   * The date as of now.
+   * @type {string}
+   */
+  const NOW = new Date().toISOString();
+
+  const base = {
+    /**
      * This option controls if and how source maps are generated.
      *
      * nosources-source-map - A SourceMap is created without the sourcesContent in it.
@@ -80,18 +117,18 @@ module.exports = (env = DEFAULT_ENV) => ({
      * @type {string}
      * @see {@link https://webpack.js.org/configuration/devtool/}
      */
-  devtool: NODE_ENV === PRODUCTION ? 'source-map' : 'eval-source-map',
+    devtool: 'source-map',
 
-  /**
+    /**
      * Define the entry points for the application.
      * @type {array.<string>}
      * @see {@link https://webpack.js.org/concepts/entry-points/}
      */
-  entry: [path.join(__dirname, 'src/index.js')],
+    entry: './src/index.js',
 
-  // mode: NODE_ENV === PRODUCTION ? PRODUCTION : DEVELOPMENT,
+    mode: NODE_ENV === PRODUCTION ? PRODUCTION : DEVELOPMENT,
 
-  /**
+    /**
      * In modular programming, developers break programs up into discrete chunks of functionality
      * called a module. Each module has a smaller surface area than a full program, making verification,
      * debugging, and testing trivial. Well-written modules provide solid abstractions and encapsulation
@@ -105,152 +142,191 @@ module.exports = (env = DEFAULT_ENV) => ({
      * @type {array.<!Object>}
      * @see {@link https://webpack.js.org/configuration/module/#module-rules}
      */
-  module: {
-    rules: [
-      /**
+    module: {
+      rules: [
+        /**
+         * Extract sourceMappingURL comments from modules and offer it to webpack
+         * @see {@link https://github.com/webpack-contrib/source-map-loader}
+         */
+        {
+          enforce: 'pre',
+          loader: 'source-map-loader',
+          test: /\.js$/,
+        },
+
+        /**
          * eslint-loader options.
          * @type {!Object}
          * @see {@link https://github.com/MoOx/eslint-loader}
          */
-      {
-        enforce: 'pre',
-        exclude: DEFAULT_EXCLUDE_RX,
-        loader: 'eslint-loader',
-        options: {
-          emitError: true,
-          emitWarning: false,
-          failOnError: true,
-          failOnWarning: false,
-          formatter: eslintFriendlyFormatter,
-          quiet: true,
+        {
+          enforce: 'pre',
+          exclude: DEFAULT_EXCLUDE_RX,
+          loader: 'eslint-loader',
+          options: {
+            emitError: true,
+            emitWarning: false,
+            failOnError: true,
+            failOnWarning: false,
+            formatter: USE_FRIENDLY_FORMATTER ? eslintFriendlyFormatter : stylish,
+            quiet: true,
+          },
+          test: /\.(js|json)$/,
         },
-        test: /\.(js|json)$/,
-      },
 
-      /**
+        /**
          * This package allows transpiling JavaScript files using Babel and webpack.
-         * @type {!Object}
+         *
          * @see {@link https://webpack.js.org/loaders/babel-loader/}
          */
-      {
-        exclude: DEFAULT_EXCLUDE_RX,
-        loader: 'babel-loader',
-        options: {
-          plugins: ['lodash'],
-          presets: [['env', {
-            modules: false,
-            targets: {
-              node: 8,
-            },
-          }]],
+        {
+          exclude: DEFAULT_EXCLUDE_RX,
+          loader: 'babel-loader',
+          test: /\.js$/,
         },
-        test: /\.js$/,
-      },
-    ],
-  },
+      ],
+    },
 
-  // prevent webpack from injecting mocks to Node native modules
-  // that does not make sense for the client
-  node: {
-    child_process: 'empty',
-    dgram: 'empty',
-    fs: 'empty',
-    net: 'empty',
-    // prevent webpack from injecting useless setImmediate polyfill.
-    setImmediate: false,
-    tls: 'empty',
-  },
+    // prevent webpack from injecting mocks to Node native modules
+    // that does not make sense for the client
+    node: {
+      child_process: 'empty',
+      dgram: 'empty',
+      fs: 'empty',
+      net: 'empty',
+      // prevent webpack from injecting useless setImmediate polyfill.
+      setImmediate: false,
+      tls: 'empty',
+    },
 
-  /**
+    /**
      * Configuring the output configuration options tells webpack how to write the compiled
      * files to disk.
      * @type {!Object}
      * @see {@link https://webpack.js.org/configuration/output/}
      */
-  output: {
-    filename: 'index.js',
-    library: 'returnExports',
-    libraryTarget: 'umd',
-    path: path.resolve(__dirname, 'dist'),
-  },
+    output: {
+      // https://github.com/webpack/webpack/issues/6525
+      globalObject: `(${getGlobal.toString()}())`,
+      library,
+      libraryTarget: 'umd',
+      path: dist,
+    },
 
-  /**
-     * Plugins are the backbone of webpack. webpack itself is built on the same plugin system
+    /**
+     * Plugins are the backbone of webpack. Webpack itself is built on the same plugin system
      * that you use in your webpack configuration!
      *
      * A webpack plugin is a JavaScript object that has an apply property. This apply property
      * is called by the webpack compiler, giving access to the entire compilation lifecycle.
      *
-     * @type {array.<!Object>}
      */
-  plugins: [
-    /**
+    plugins: [
+      /**
        * Use the shorthand version.
        * @type {!Object}
        * @see {@link https://webpack.js.org/plugins/environment-plugin/}
        */
-    new webpack.EnvironmentPlugin({
-      DEBUG: false, // use 'false' unless process.env.DEBUG is defined.
-      NODE_ENV: DEVELOPMENT, // use 'development' unless process.env.NODE_ENV is defined.
-    }),
+      new webpack.EnvironmentPlugin({
+        DEBUG: false, // use 'false' unless process.env.DEBUG is defined.
+        NODE_ENV: DEVELOPMENT, // use 'development' unless process.env.NODE_ENV is defined.
+      }),
 
-    /**
+      /**
        * Fetch polyfill for environments that are missing the API.
        * Only loads if required.
        * @type {!Object}
        * @see {@link https://webpack.js.org/plugins/provide-plugin/
-     */
-    new webpack.ProvidePlugin({
-      fetch: WHATWG_FETCH,
-      'window.fetch': WHATWG_FETCH,
-    }),
+       */
+      new webpack.ProvidePlugin({
+        fetch: WHATWG_FETCH,
+      }),
 
-    /**
+      /**
        * Smaller lodash builds. We are not opting in to path feature.
        * @type {!Object}
        * @see {@link https://github.com/lodash/lodash-webpack-plugin}
        */
-    new LodashModuleReplacementPlugin({
-      paths: true,
-    }),
+      new LodashModuleReplacementPlugin({
+        paths: true,
+      }),
+
+      /**
+       * Adds a banner to the top of each generated chunk.
+       * @type {!Object}
+       * @see {@link https://webpack.js.org/plugins/banner-`plugin/}
+       */
+      new webpack.BannerPlugin({
+        banner: `/*!\n${JSON.stringify(
+          {
+            copywrite: `${PACKAGE.copyright}`,
+            date: `${NOW}`,
+            describe: `${DESCRIBE}`,
+            description: `${PACKAGE.description}`,
+            file: '[file]',
+            hash: '[hash]',
+            license: `${PACKAGE.license}`,
+            version: `${PACKAGE.version}`,
+          },
+          null,
+          2,
+        )}\n*/`,
+        raw: true,
+      }),
+    ],
 
     /**
-       * This plugin uses UglifyJS v3 (uglify-es) to minify your JavaScript.
-       * @type {!Object}
-       * @see {@link https://webpack.js.org/plugins/uglifyjs-webpack-plugin/}
-       */
-    ...(NODE_ENV === PRODUCTION ? [new webpack.optimize.UglifyJsPlugin({
-      parallel: true,
-      sourceMap: true,
-      uglifyOptions: {
-        ecma: 8,
-      },
-    })] : []),
-
-    /**
-       * Webpack plugin and CLI utility that represents bundle content as convenient
-       * interactive zoomable treemap.
-       * @type {!Object}
-       * @see {@link https://github.com/webpack-contrib/webpack-bundle-analyzer}
-       */
-    ...(env.report ? [new BundleAnalyzerPlugin()] : []),
-  ],
-
-  /**
      * These options change how modules are resolved.
      * @type {!Object}
      * @see {@link https://webpack.js.org/configuration/resolve/}
      */
-  resolve: {
-    /**
+    resolve: {
+      /**
        * Create aliases to import or require certain modules more easily.
        * @type {!Object}
        * @see {@link https://webpack.js.org/configuration/resolve/#resolve-alias}
        */
-    alias: {
-      RootDir: path.resolve(__dirname, '.'),
-      src: path.resolve(__dirname, 'src'),
+      alias: {
+        RootDir: path.resolve(__dirname, '.'),
+        src: path.resolve(__dirname, 'src'),
+      },
+      extensions: ['.js', '.json'],
     },
-    extensions: ['.js', '.json'],
-  },
-});
+  };
+
+  const browser = merge(base, {
+    optimization: {
+      minimize: false,
+    },
+
+    output: {
+      filename: `${filename}.js`,
+    },
+  });
+
+  const minified = merge(browser, {
+    output: {
+      filename: `${filename}.min.js`,
+    },
+
+    /**
+     * Webpack plugin and CLI utility that represents bundle content as convenient
+     * interactive zoomable treemap.
+     *
+     * @see {@link https://github.com/webpack-contrib/webpack-bundle-analyzer}
+     */
+    plugins: [
+      new UglifyJsPlugin({
+        parallel: true,
+        sourceMap: true,
+        uglifyOptions: {
+          ecma: 5,
+        },
+      }),
+
+      ...(env && env.report ? [new BundleAnalyzerPlugin()] : []),
+    ],
+  });
+
+  return [browser, minified];
+};
