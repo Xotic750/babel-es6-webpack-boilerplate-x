@@ -15,17 +15,18 @@ const stylish = require('eslint/lib/formatters/stylish');
 const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
 
 const getGlobal = function() {
-  'use strict';
-
   if (typeof self !== 'undefined') {
     return self;
   }
+
   if (typeof window !== 'undefined') {
     return window;
   }
+
   if (typeof global !== 'undefined') {
     return global;
   }
+
   return Function('return this')();
 };
 

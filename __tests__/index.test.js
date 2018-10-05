@@ -1,14 +1,9 @@
 import main from '../src/index';
 
 describe('module', () => {
-  let obj;
-
-  beforeEach(() => {
-    obj = {};
-  });
-
   it('should exist', () => {
     expect.hasAssertions();
+    const obj = {};
     expect(obj).toBeDefined();
   });
 
